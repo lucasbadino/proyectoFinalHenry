@@ -1,0 +1,43 @@
+{
+  "name": "front",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.5.1",
+    "@auth0/nextjs-auth0": "^3.5.0",
+    "@types/express": "^5.0.0",
+    "@types/leaflet": "^1.9.14",
+    "antd": "^5.22.2",
+    "axios": "^1.7.7",
+    "cors": "^2.8.5",
+    "date-fns": "^2.30.0",
+    "express": "^4.21.1",
+    "express-openid-connect": "^2.17.1",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.460.0",
+    "next": "15.0.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.3.0",
+    "sweetalert2": "^11.14.5",
+    "swiper": "^11.1.14"
+  },
+  "devDependencies": {
+    "@babel/preset-react": "latest",
+    "@types/node": "^20.17.7",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "babel-eslint": "latest",
+    "eslint": "^8",
+    "eslint-config-next": "15.0.2",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}
