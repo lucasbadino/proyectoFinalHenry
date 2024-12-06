@@ -118,6 +118,7 @@ const ContactView = () => {
         </form>
         {success && <p className="mt-4 text-center text-green-600">¡Correo enviado con éxito!</p>}
       </div>
+      
     </div>
   );
 };
