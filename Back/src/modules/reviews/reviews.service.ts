@@ -49,7 +49,7 @@ export class ReviewsService {
             console.log(gardener), 'gardener';
             let suma = gardener.calification || 0
             gardener.reviews.forEach(r => suma += r.rate)
-            const promedio = suma / (gardener.reviews.length + 1) // solamente el +1 para el seed
+            const promedio = suma / (gardener.reviews.length)
             gardener.calification = Math.floor(promedio)
             const newReview = await this.reviewsRepository.save(review)
             await this.servicesOrderRepository.save(order)

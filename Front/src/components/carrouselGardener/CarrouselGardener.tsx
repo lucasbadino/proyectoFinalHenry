@@ -187,35 +187,37 @@ const LeftArrow = () => {
         </h2>
 
         <div className="carousel-container my-6">
-          <Carousel
-            autoplay
-            effect="scrollx"
-            arrows
-            prevArrow={LeftArrow()}
-            nextArrow={RightArrow()}
-          >
-            {carrousel.map((imageUrl, index) => (
-              <div
-                key={index}
-                className="w-full max-h-96 flex justify-center items-center overflow-hidden rounded-lg border-2 border-[#4CAF50]"
-              >
-                <Image
-                  src={imageUrl}
-                  alt={`Imagen ${index + 1}`}
-                  width={1920}
-                  height={1080}
-                  className="object-cover"
-                />
-                <button
-                  onClick={() => handleDelete(index)}
-                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
-                >
-                  X
-                </button>
-              </div>
-            ))}
-          </Carousel>
-        </div>
+  <Carousel
+    autoplay
+    effect="scrollx"
+    arrows
+    prevArrow={LeftArrow()}
+    nextArrow={RightArrow()}
+    key={carrousel.length} // Forzar re-renderización
+  >
+    {carrousel.map((imageUrl, index) => (
+      <div
+        key={index}
+        className="w-full max-h-96 flex justify-center items-center overflow-hidden rounded-lg border-2 border-[#4CAF50] relative"
+      >
+        <Image
+          src={imageUrl}
+          alt={`Imagen ${index + 1}`}
+          width={1920}
+          height={1080}
+          className="object-cover"
+        />
+        <button
+          onClick={() => handleDelete(index)}
+          className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
+        >
+          X
+        </button>
+      </div>
+    ))}
+  </Carousel>
+</div>
+
       </div>
 
       <div className="mt-8">
