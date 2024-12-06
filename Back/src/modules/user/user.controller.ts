@@ -34,7 +34,8 @@ export class UserController {
   @ApiQuery({ name: 'limit', required: false, description: 'Cantidad de resultados por página', example: 10 })
   @ApiQuery({ name: 'name', required: false, description: 'Nombre para filtrar los resultados', example: '' })
   @ApiQuery({ name: 'order', required: false, description: 'Orden de los resultados (ASC o DESC)', enum: ['ASC', 'DESC'], example: 'ASC' })
-  findAll(
+  async findAll(
+    @Res() res: Response,
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
     @Query('name') name?: string,
@@ -42,7 +43,17 @@ export class UserController {
     @Query('isBanned') isBanned?: boolean,
     @Query('role') role?: string,
   ) {
-    return this.userService.findAll(page, limit, name, order, isBanned, role);
+    try{
+    const data = await this.userService.findAll(page, limit, name, order, isBanned, role);
+    return res.status(200).json({
+      data: data.data,
+      totalCount: data.count,
+      currentPage: page,
+      totalPages: Math.ceil(data.count / limit)
+    });
+  } catch(error) {
+    return res.status(500).json({ message: 'Error interno', error });
+  }
   }
 
   @UseGuards(AuthGuard)

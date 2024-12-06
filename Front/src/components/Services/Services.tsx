@@ -240,12 +240,14 @@ const Services = () => {
           No hay servicios disponibles.
         </p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
           {services.map((service) => (
-            <div
-              key={service.id}
-              className="bg-white border border-[#388E3C] rounded-lg shadow-md p-6 hover:shadow-lg hover:shadow-[#8BC34A] transition"
-            >
+           <div
+           key={service.id}
+           className="bg-white border border-[#388E3C] rounded-lg shadow-md p-6 hover:shadow-lg hover:shadow-[#8BC34A] transition overflow-hidden"
+         >
+         
               <div className="flex justify-end">
                 <button onClick={() => handleEditService(service)}>
                 <Tooltip title="Editar" color="#263238">
@@ -261,17 +263,17 @@ const Services = () => {
                 </button>
                 </Tooltip>
               </div>
-              <h2 className="font-semibold text-lg text-green-700 mb-2">
-                {service.detailService}
-              </h2>
-              <p className="text-gray-600 mb-1">
-                <span className="font-medium text-gray-700">Categoría: </span>
-                {service.categories}
-              </p>
-              <p className="text-gray-600">
-                <span className="font-medium text-gray-700">Precio: </span>$
-                {service.price}
-              </p>
+              <h2 className="font-semibold text-lg md:text-xl text-green-700 mb-2">
+  {service.detailService}
+</h2>
+<p className="text-sm md:text-base text-gray-600">
+  <span className="font-medium text-gray-700">Categoría: </span>
+  {service.categories}
+</p>
+<p className="text-sm md:text-base text-gray-600">
+  <span className="font-medium text-gray-700">Precio: </span>${service.price}
+</p>
+
             </div>
           ))}
           {isEditing && selectedService && (

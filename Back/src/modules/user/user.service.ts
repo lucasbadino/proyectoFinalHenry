@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -30,7 +30,8 @@ export class UserService {
     order: 'ASC' | 'DESC' = 'ASC',
     isBanned?: boolean,
     role?: string,
-  ) {
+  ): Promise<{ data: User[]; count: number }> {
+    try{
     const skip = (page - 1) * limit;
 
     const query = this.userRepository.createQueryBuilder('user')
@@ -60,8 +61,10 @@ export class UserService {
     return {
       count: total,
       data: results,
-      page,
     };
+  } catch(error) {
+    throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
   }
 
   async findOne(id: string): Promise<User> {

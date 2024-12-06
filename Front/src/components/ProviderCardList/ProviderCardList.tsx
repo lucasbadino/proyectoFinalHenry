@@ -82,7 +82,6 @@ const ProviderCardList: React.FC = () => {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [totalProviders, setTotalProviders] = useState<number>(0);
   const [inputSave, setInputSave] = useState<string>("");
-  const itemsPerPage = 8;
 
   const router = useRouter();
 

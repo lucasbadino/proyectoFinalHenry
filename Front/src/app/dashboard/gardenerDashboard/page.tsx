@@ -355,41 +355,39 @@ const GardenerDashboard = () => {
   return (
     <div>
       {/* Menú de navegación */}
-      <nav className="flex justify-around bg-primary text-white p-4 rounded-md">
-        <button
-          onClick={() => fetchTasks(userSession?.user?.id.toString() || "")}
-          className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded ${activeComponent === "tareas" ? "opacity-75" : ""
-            }`}
-        >
-          Tareas
-        </button>
-        <button
-          onClick={() => setActiveComponent("calendario")}
-          className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded ${activeComponent === "calendario" ? "opacity-75" : ""
-            }`}
-        >
-          Calendario
-        </button>
-        <button
-          onClick={() => setActiveComponent("perfil")}
-          className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded ${activeComponent === "perfil" ? "opacity-75" : ""
-            }`}
-        >
-          Mi Perfil
-        </button>
-        <button
-          onClick={() => setActiveComponent("Editar Servicios")}
-          className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded ${activeComponent === "Editar Servicios" ? "opacity-75" : ""
-            }`}
-        >
-          Editar Servicios
-        </button>
-      </nav>
+      <nav className="flex flex-wrap justify-around bg-primary text-white p-4 rounded-md md:flex-row sm:flex-col">
+  <button
+    onClick={() => fetchTasks(userSession?.user?.id.toString() || "")}
+    className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded mb-2 sm:mb-0 ${activeComponent === "tareas" ? "opacity-75" : ""}`}
+  >
+    Tareas
+  </button>
+  <button
+    onClick={() => setActiveComponent("calendario")}
+    className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded mb-2 sm:mb-0 ${activeComponent === "calendario" ? "opacity-75" : ""}`}
+  >
+    Calendario
+  </button>
+  <button
+    onClick={() => setActiveComponent("perfil")}
+    className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded mb-2 sm:mb-0 ${activeComponent === "perfil" ? "opacity-75" : ""}`}
+  >
+    Mi Perfil
+  </button>
+  <button
+    onClick={() => setActiveComponent("Editar Servicios")}
+    className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded mb-2 sm:mb-0 ${activeComponent === "Editar Servicios" ? "opacity-75" : ""}`}
+  >
+    Editar Servicios
+  </button>
+</nav>
+
+
 
       {/* Contenido dinámico */}
       <main className="p-6 bg-secondary">
         {activeComponent === "tareas" && (
-          <section>
+         <section className="w-full max-w-screen-lg mx-auto">
             <h1 className="text-2xl font-bold text-[#263238] m-3 text-center">
               Tareas del Jardinero
             </h1>
@@ -446,12 +444,13 @@ const GardenerDashboard = () => {
                 </label>
               </div>
             ))}
-           <button
+<button
   onClick={saveServices}
-  className="mt-4 w-40 p-2 bg-[#4CAF50] text-white rounded hover:bg-[#388E3C] hover:text-[#FFEB3B] mx-auto block"
+  className="mt-4 w-40 p-2 bg-[#4CAF50] text-white rounded hover:bg-[#388E3C] hover:text-[#FFEB3B] mx-auto block sm:w-full md:w-40"
 >
   Guardar Servicios
 </button>
+
 
           </section>
       

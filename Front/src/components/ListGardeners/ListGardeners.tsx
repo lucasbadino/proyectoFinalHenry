@@ -67,9 +67,9 @@ const ListGardeners: React.FC = () => {
   const [filter, setFilter] = useState<string>("ASC");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-
-  const [currentPage, setCurrentPage] = useState<number>(1); // Estado para manejar la página actual
-  const itemsPerPage = 8; // Límite de cards por página
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [totalProviders, setTotalProviders] = useState<number>(0)
   const [availability, setAvailability] = useState<string | undefined>(undefined);
   const [editGardener, setEditGardener] = useState<IServiceProvider | null>(null);
   const router = useRouter();
@@ -103,6 +103,7 @@ const ListGardeners: React.FC = () => {
     if (typeof window !== "undefined") {
       localStorage.setItem("filter", newFilter);
     }
+    setCurrentPage(1); 
   };
 
 
@@ -113,6 +114,7 @@ const ListGardeners: React.FC = () => {
     if (typeof window !== "undefined") {
       localStorage.setItem("searchTerm", newSearchTerm);
     }
+    setCurrentPage(1);
   };
 
   const handleDelete = async (id: number) => {
@@ -197,13 +199,22 @@ const ListGardeners: React.FC = () => {
         if (filter === "AVAILABLE") {
           availability = "true";
         }
+
         const token =
           typeof window !== "undefined"
             ? JSON.parse(localStorage.getItem("userSession") || "{}").token
             : null;
 
-        const gardeners = await getGardenersDB(token, order, calification, searchTerm,) //availability);
-        setProviders(gardeners.data || []);
+        const gardeners = await getGardenersDB(
+          token, 
+          order, 
+          calification, 
+          searchTerm, 
+          currentPage
+        )
+        setProviders(gardeners.data);
+        setTotalPages(gardeners.totalPages);
+        setTotalProviders(gardeners.totalCount);
       } catch (error: any) {
         setError(error.message || "Error al cargar los Jardineros");
       } finally {
@@ -212,34 +223,25 @@ const ListGardeners: React.FC = () => {
     };
 
     fetchProviders();
-  }, [filter, searchTerm]);
+  }, [currentPage, filter, searchTerm]);
 
-  const handleNextPage = () => {
-    setCurrentPage((prev) => prev + 1);
-  };
 
-  const handlePreviousPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  };
-
-  const paginatedProviders = providers.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
 
   if (loading)
 
 
     return (
       <div className="flex flex-col items-center justify-center h-screen w-screen">
-      {/* Spinner */}
-      <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+  {/* Spinner */}
+  <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
 
-      {/* Texto */}
-      <h2 className="text-xl font-semibold text-[#263238]">
-        Cargando la informacion..
-      </h2>
-    </div>
+  {/* Texto */}
+  <h2 className="text-xl font-semibold text-[#263238] text-center">
+    Cargando la información...
+  </h2>
+</div>
+
+    
     );
     
     if (error) return <div>{error}</div>;
@@ -258,23 +260,26 @@ const ListGardeners: React.FC = () => {
           </div>
         ) : (
           <>
-            <div className="flex justify-between items-center text-orange-950 bg-[#388E3C] p-3 shadow-sm rounded-lg mb-4">
-              <h2>Jardineros Disponibles</h2>
-              <div className="relative w-1/2">
-                <input
-                  type="text"
-                  placeholder="Buscar jardinero..."
-                  value={searchTerm}
-                  onChange={handleSearch}
-                  className="w-full pl-4 pr-10 py-2 border border-[#263238] rounded-lg focus:ring-2 focus:ring-green-400 focus:outline-none"
-                />
-                <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-              </div>
-              <Dropdown filter={filter} onChange={handleFilter} />
-            </div>
+         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#388E3C] p-3 shadow-sm rounded-lg mb-4">
+  <h2 className="text-white text-lg sm:text-xl">Jardineros Disponibles</h2>
+  
+  <div className="w-full sm:w-1/2 relative">
+    <input
+      type="text"
+      placeholder="Buscar jardinero..."
+      value={searchTerm}
+      onChange={handleSearch}
+      className="w-full pl-4 pr-10 py-2 border border-[#263238] rounded-lg focus:ring-2 focus:ring-green-400 focus:outline-none"
+    />
+    <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+  </div>
+
+  <Dropdown filter={filter} onChange={handleFilter} />
+</div>
+
     
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto">
-              {paginatedProviders.map((gardener) => (
+              {providers.map((gardener) => (
                 <div key={gardener.id} className="relative bg-white shadow-md rounded-lg p-4 border border-[#4CAF50]">
                   {editGardener?.id === gardener.id ? (
                     <EditGardenerForm
@@ -311,24 +316,39 @@ const ListGardeners: React.FC = () => {
                 </div>
               ))}
             </div>
-    
-            <div className="flex justify-between mt-6 mb-8">
-              <button
-                onClick={handlePreviousPage}
-                disabled={currentPage === 1}
-                className={`px-4 py-2 bg-[#8BC34A] text-white rounded hover:bg-[#8BC34A] hover:text-[#263238] hover:shadow-lg hover:shadow-[#FFEB3B] ${
-                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+            <div className="flex flex-col sm:flex-row justify-between mt-6 mb-8 items-center space-y-4 sm:space-y-0">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className={`px-4 py-2 bg-[#8BC34A] text-white rounded hover:shadow-lg hover:shadow-[#FFEB3B] hover:text-[#263238] ${
+                currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
               Página anterior
             </button>
+
+            <div className="flex space-x-2">
+              {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`px-3 py-1 rounded-full ${
+                    page === currentPage 
+                      ? "bg-[#8BC34A] text-[#263238] hover:text-[#FFEB3B] hover:shadow-lg hover:shadow-[#FFEB3B]" 
+                      : "bg-gray-200 text-[#263238] hover:text-[#4CAF50] hover:shadow-lg hover:shadow-[#FFEB3B]"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+
             <button
-              onClick={handleNextPage}
-              disabled={currentPage * itemsPerPage >= providers.length}
-              className={`px-4 py-2 bg-[#4CAF50] text-white rounded hover:bg-[#8BC34A] hover:text-[#263238] hover:shadow-lg hover:shadow-[#FFEB3B] ${currentPage * itemsPerPage >= providers.length
-                  ? "opacity-50 cursor-not-allowed"
-                  : ""
-                }`}
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className={`px-4 py-2 bg-[#8BC34A] text-white rounded hover:shadow-lg hover:shadow-[#FFEB3B] hover:text-[#263238] ${
+                currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
               Página siguiente
             </button>
